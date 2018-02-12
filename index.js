@@ -42,20 +42,24 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-    let lenght = persons.length
+
     let date = new Date()
-    res.send("puhelin luettelossa on "+ lenght +" henkilön tiedot. <br></br> "+ date +" ")
+    Person
+    .count()
+    .then(count => {
+      res.send("puhelin luettelossa on "+ count +" henkilön tiedot. <br></br> "+ date +" ")
+    })
+
   })
 
 app.get('/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
+  Person
+    .findById(request.params.id)
+    .then(person => {
+      response.json(formatPerson(person))
+    })
 
-  if ( person ) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+
 })
 app.delete('/api/persons/:id', (request, response) => {
    
