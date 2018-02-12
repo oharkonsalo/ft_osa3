@@ -11,6 +11,16 @@ app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 
+const formatPerson = (person) => {
+  return {
+    name: person.name,
+    number: person.number,
+    id: person._id
+  }
+}
+
+
+
 let persons = [
       { name: 'Arto Hellas', number: '040-123456', id: 1},
       { name: 'Martti Tienari', number: '040-123456', id: 2},
@@ -26,7 +36,7 @@ app.get('/api/persons', (req, res) => {
    Person
    .find({})
    .then(persons => {
-     res.json(persons)
+     res.json(persons.map(formatPerson))
    })
   
 })
@@ -48,9 +58,9 @@ app.get('/persons/:id', (request, response) => {
   }
 })
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id) 
+   
     Person
-    .findByIdAndRemove(id)
+    .findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
     })
